@@ -1,39 +1,47 @@
-# C# Automation Assessment Template
+# Ram Simha Prabhanjan's C# Initial Automation Assessment 
 
-This project is a starting point for completing the automation assessment. It includes:
-
-- Basic solution and project setup
-- Refit interface shell
-- Playwright test base setup
-- Empty folder structure for organizing tests
-
-- You can write and show case your own tests in any manner you want. URL's for UI and API are below.
-
-### Important Instructions
-
-1. Click **"Use this template"** (top right of the GitHub repo)
-2. **Create a new PRIVATE repository** from this template
-3. Complete the task in your private repo
-4. When finished, share the GitHub link with us (make sure we have access if your org blocks external users)
-
-## Requirements
-
-- Use Playwright for .NET for UI automation.
-- Use Refit to interact with the API.
-- Include a clear README.md file with:
-- Setup instructions
-- How to run the tests
-- Any assumptions made
-- (Optional Bonus) Use GitHub Actions or other CI to run the tests automatically.
-
-## Setup
-
-```bash
-dotnet restore
-playwright install
-```
-
-## URL's to use
+## Demo Website used 
 UI: https://demoqa.com/automation-practice-form 
 API: https://reqres.in 
+
+
+
+
+### Whats in the project?
+Api folder-> Refit inerface class for GET and POST implementation 
+AutomationTest-> 4 Tests that inherits Fixture class to use setup and teardown methods
+				 Tags for differenciating tests
+				 2 UI using Playwright and 2API tests using Refit pkg
+Data-> csv file: Test data for user form 
+Fixture-> ProjectFixture class to setup browser, launch url , teardown
+Pages-> RegisterPage class that is used for POM- Page object model , all locators respective to page and action methods
+TestDataModel-> Getters and Setters class for test data access
+Utils-> baseurl, static address and values , 
+        Data read util class, which reads data from csv which serves for test
+appsettings.json -> urls
+AutomationAssessment.csproj-> dependencies and rules 
+
+
+
+## Requirements
+i have used .NET 9.0
+Powershell for installing Playwright browsers and other components
+
+
+
+## Setup and test exection
+
+```
+dotnet build
+pwsh bin/Debug/net9.0/playwright.ps1 install
+dotnet test
+
+```
+
+##Pending work
+Parameterize tests
+add more negative tests
+Allure reporting for tests
+PUT and DELETE methods demo using Refit
+
 

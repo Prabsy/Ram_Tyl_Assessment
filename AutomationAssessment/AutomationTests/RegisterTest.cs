@@ -5,10 +5,16 @@ using AutomationAssessment.Pages;
 using Microsoft.Playwright;
 using AutomationAssessment.Utils;
 using Refit;
+using NUnit.Allure.Attributes;
+using Allure.Commons;
+using NUnit.Allure.Core;
 
 
 namespace AutomationAssessment.AutomationTests
 {
+    [AllureNUnit]
+    [AllureSuite("Register Form tests")]
+    [AllureEpic("User Registration Test class")]
     public class ExampleTest : ProjectFixture
     {
         private RegisterPage _registerPage;
@@ -19,7 +25,7 @@ namespace AutomationAssessment.AutomationTests
         public async Task InitPage()
         {
             _registerPage = new RegisterPage(page);
-            
+
         }
 
         [Test]
@@ -28,7 +34,10 @@ namespace AutomationAssessment.AutomationTests
         {
             await _registerPage.NavigateBaseUrl();
             // Wait for the page to load
-            await page.WaitForLoadStateAsync(LoadState.Load);
+            await page.WaitForLoadStateAsync(LoadState.Load, options: new PageWaitForLoadStateOptions
+            {
+                Timeout = 60000 // Set a timeout for the load state
+            });
             // await page.WaitForTimeoutAsync(2000);
             var title = await _registerPage.GetPageTitle();
             Assert.That(title, Does.Contain("DEMOQA"));
@@ -40,36 +49,47 @@ namespace AutomationAssessment.AutomationTests
             Console.WriteLine($"User Last Name: {user.LastName}");
         }
 
-        [Test]
-        public async Task TestRegisterUser()
+        [Test, TestCaseSource(typeof(ReadTestData), nameof(ReadTestData.ParseTestData))]
+        [AllureTag("DemoTests")]
+        [AllureSeverity(SeverityLevel.critical)]
+        [AllureFeature("Positive case Filling the Form")]
+        public async Task TestRegisterUser(RegisterUserModel testUser)
         {
             await _registerPage.NavigateBaseUrl();
             // Wait for the page to load
-            await page.WaitForLoadStateAsync(LoadState.Load);
+            await page.WaitForLoadStateAsync(LoadState.Load, options: new PageWaitForLoadStateOptions
+            {
+                Timeout = 60000 // Set a timeout for the load state
+            });
 
             // Reading Test data from CSV file
-            var testUsers = ReadTestData.ParseTestData("Data/test_data.csv");
+            //var testUsers = ReadTestData.ParseTestData("Data/test_data.csv");
 
             // Fill the registration form with test data
-            await _registerPage.EnterFirstName(testUsers[0].FirstName);
-            await _registerPage.EnterLastName(testUsers[0].LastName);
-            await _registerPage.EnterUserEmail(testUsers[0].Email);
-            await _registerPage.SelectGender(testUsers[0].Gender);
-            await _registerPage.EnterMobileNumber(testUsers[0].MobileNumber);
+            await _registerPage.EnterFirstName(testUser.FirstName);
+            await _registerPage.EnterLastName(testUser.LastName);
+            await _registerPage.EnterUserEmail(testUser.Email);
+            await _registerPage.SelectGender(testUser.Gender);
+            await _registerPage.EnterMobileNumber(testUser.MobileNumber);
             // await _registerPage.SelectDateOfBirth(testUsers[0].DateOfBirth);
-            foreach (var sub in testUsers[0].Subjects.ToString().Split(';'))
+            foreach (var sub in testUser.Subjects.ToString().Split(';'))
             {
-                
+
                 await _registerPage.EnterSubjects(sub);
                 await _registerPage.PressTab();
             }
-            foreach (var hobby in testUsers[0].Hobbies.ToString().Split(';'))
+            foreach (var hobby in testUser.Hobbies.ToString().Split(';'))
             {
                 await _registerPage.SelectHobbies(hobby);
             }
-            await _registerPage.EnterCurrentAddress(testUsers[0].CurrentAddress);
-            await _registerPage.SelectState(testUsers[0].State);
-            await _registerPage.SelectCity(testUsers[0].City);
+            // Upload a file if the path is provided
+            if (!string.IsNullOrEmpty(testUser.PicturePath))
+            {
+                await _registerPage.UploadFileAsync(testUser.PicturePath);
+            }
+            await _registerPage.EnterCurrentAddress(testUser.CurrentAddress);
+            await _registerPage.SelectState(testUser.State);
+            await _registerPage.SelectCity(testUser.City);
             // Submit the form
             await _registerPage.SubmitForm();
             // Wait for the form submission to complete
@@ -86,7 +106,7 @@ namespace AutomationAssessment.AutomationTests
         {
             //This test will create a user using the API and verify the response
 
-            var testUsers = ReadTestData.ParseTestData("Data/test_data.csv");
+            var testUsers = ReadTestData.ParseTestData();
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri(ConfigManager.ApiBaseUrl) // Use the API base URL from the config`
@@ -136,7 +156,7 @@ namespace AutomationAssessment.AutomationTests
             httpClient.DefaultRequestHeaders.Add("x-api-key", "reqres-free-v1");
 
             _userApi = RestService.For<IUserApi>(httpClient);
-           try
+            try
             {
                 var user = await _userApi.GetUserByIdAsync(1);
                 // Use user

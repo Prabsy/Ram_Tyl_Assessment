@@ -20,6 +20,8 @@ namespace AutomationAssessment.Pages
         private readonly ILocator sportsCheckbox;
         private readonly ILocator readingCheckbox;
         private readonly ILocator musicCheckbox;
+
+        private readonly ILocator fileInput;
         private readonly ILocator currentAddressInput;
         private readonly ILocator stateDropdown;
         private readonly ILocator cityDropdown;
@@ -41,6 +43,7 @@ namespace AutomationAssessment.Pages
             sportsCheckbox = _page.Locator("//label[@for='hobbies-checkbox-1']");
             readingCheckbox = _page.Locator("//label[@for='hobbies-checkbox-2']");
             musicCheckbox = _page.Locator("//label[@for='hobbies-checkbox-3']");
+            fileInput =  _page.Locator("//input[@id='uploadPicture']");
             currentAddressInput = _page.Locator("//textarea[@id='currentAddress']");
             stateDropdown = _page.Locator("//div[@id='state']");
             cityDropdown = _page.Locator("//div[@id='city']");
@@ -132,6 +135,13 @@ namespace AutomationAssessment.Pages
                     throw new ArgumentException("Invalid hobby specified.");
             }
         }
+
+        public async Task UploadFileAsync(string filePath)
+        {
+            
+            await fileInput.SetInputFilesAsync(filePath);
+        }
+
         //enter current address
         public async Task EnterCurrentAddress(string address)
         {

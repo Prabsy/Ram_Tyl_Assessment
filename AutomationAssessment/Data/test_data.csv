@@ -1,4 +1,4 @@
 Id,FirstName,LastName,Email,Gender,MobileNumber,DateOfBirth,Subjects,Hobbies,PicturePath,CurrentAddress,State,City
-1,Prabhanjan,RS,prabhanjan@example.com,Male,1234567890,1993-06-07,"Maths;Science","Sports;Music","NA","Bangalore","NCR","Delhi"
+1,Prabhanjan,RS,prabhanjan@example.com,Male,1234567890,1993-06-07,"Maths;Science","Sports;Music","Resources/upload.png","Bangalore","NCR","Delhi"
 2,Anita,Kumar,anita.k@example.com,Female,9123456789,1990-01-15,"English;History","Reading","NA","Mumbai","NCR","Noida"
 3,Ravi,Sharma,ravi.sharma@example.com,Other,9988776655,1985-11-30,"Physics","Music;Sports","NA","Delhi","Uttar Pradesh","Agra"
